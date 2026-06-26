@@ -1,8 +1,8 @@
-import { Environment, Float, Preload, useGLTF } from '@react-three/drei';
+import { Environment, Float, Preload, useEnvironment, useGLTF } from '@react-three/drei';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import type { MutableRefObject } from 'react';
 import { Suspense, useEffect, useMemo, useRef } from 'react';
-import { Box3, type Group, MathUtils, PCFShadowMap, Vector3 } from 'three';
+import { Box3, type Group, MathUtils, Vector3, VSMShadowMap } from 'three';
 import { assetPath } from '../constants';
 import type { EveningStarVariant } from '../variants';
 
@@ -133,6 +133,18 @@ function CameraRig() {
   return null;
 }
 
+function EnvironmentLighting() {
+  const environment = useEnvironment({ files: environmentUrl });
+
+  if (environment.flipY) {
+    // Firefox warns when HDR DataTextures upload with legacy y-flip pixel-store state.
+    environment.flipY = false;
+    environment.needsUpdate = true;
+  }
+
+  return <Environment environmentIntensity={0.7} map={environment} />;
+}
+
 export function ExperienceCanvas({ onReady, variant }: ExperienceCanvasProps) {
   const pointer = useNormalizedPointer();
   const modelUrl = assetPath(variant.model);
@@ -143,7 +155,7 @@ export function ExperienceCanvas({ onReady, variant }: ExperienceCanvasProps) {
         camera={{ position: [0, 0, 5.35], fov: 35, near: 0.1, far: 100 }}
         dpr={[1, 2]}
         gl={{ alpha: true, antialias: true, powerPreference: 'high-performance', preserveDrawingBuffer: true }}
-        shadows={{ type: PCFShadowMap }}
+        shadows={{ type: VSMShadowMap }}
       >
         <fog attach="fog" args={[variant.fog, 9, 18]} />
         <ambientLight intensity={0.95} />
@@ -151,7 +163,7 @@ export function ExperienceCanvas({ onReady, variant }: ExperienceCanvasProps) {
         <directionalLight intensity={1.2} position={[-5, -2, 4]} color={variant.light} />
         <spotLight angle={0.5} intensity={22} penumbra={0.4} position={[0, 4, 5]} color="#ffffff" />
         <Suspense fallback={null}>
-          <Environment files={environmentUrl} environmentIntensity={0.7} />
+          <EnvironmentLighting />
           <BoardModel key={variant.id} modelUrl={modelUrl} onReady={onReady} pointer={pointer} />
           <Preload all />
         </Suspense>
