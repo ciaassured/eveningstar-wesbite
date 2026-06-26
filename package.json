@@ -1,0 +1,41 @@
+{
+  "name": "eveningstar-website",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@11.9.0",
+  "engines": {
+    "node": ">=22.0.0",
+    "pnpm": ">=11.0.0"
+  },
+  "scripts": {
+    "dev": "vite --host 127.0.0.1",
+    "dev:debug": "vite --host 127.0.0.1 --port 5173 --strictPort --force --clearScreen false",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview --host 127.0.0.1",
+    "lint": "biome ci .",
+    "format": "biome check --write .",
+    "test:e2e": "playwright test"
+  },
+  "dependencies": {
+    "@fontsource-variable/tektur": "^5.2.7",
+    "@fontsource/vt323": "^5.2.7",
+    "@react-three/drei": "^10.7.7",
+    "@react-three/fiber": "^9.6.1",
+    "gsap": "^3.15.0",
+    "lucide-react": "^1.21.0",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7",
+    "three": "^0.185.0"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.5.1",
+    "@playwright/test": "^1.61.1",
+    "@types/react": "^19.2.17",
+    "@types/react-dom": "^19.2.3",
+    "@types/three": "^0.185.0",
+    "@vitejs/plugin-react": "^6.0.3",
+    "typescript": "^6.0.3",
+    "vite": "^8.1.0"
+  }
+}

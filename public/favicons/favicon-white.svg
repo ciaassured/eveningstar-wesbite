@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <title>CIA white favicon</title>
+  <rect width="64" height="64" rx="4" fill="#111615"/>
+  <path
+    fill="#d9f6ff"
+    fill-rule="evenodd"
+    d="M8 44V20h15v6h-8v12h8v6H8Zm19 0V20h7v24h-7Zm9 0 7-24h7l7 24h-6l-1-4h-7l-1 4h-6Zm9-10h4l-2-8-2 8Z"
+    clip-rule="evenodd"
+  />
+</svg>

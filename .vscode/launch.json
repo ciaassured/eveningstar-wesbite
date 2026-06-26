@@ -1,0 +1,37 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug Evening Star",
+      "type": "firefox",
+      "request": "launch",
+      "reAttach": true,
+      "reloadOnAttach": true,
+      "url": "http://127.0.0.1:5173/",
+      "webRoot": "${workspaceFolder}",
+      "firefoxExecutable": "/usr/bin/firefox",
+      "timeout": 15,
+      "preLaunchTask": "Start Vite dev server",
+      "pathMappings": [
+        {
+          "url": "http://127.0.0.1:5173/src/",
+          "path": "${workspaceFolder}/src/"
+        },
+        {
+          "url": "http://127.0.0.1:5173/",
+          "path": "${workspaceFolder}"
+        }
+      ],
+      "skipFiles": ["${workspaceFolder}/node_modules/**", "http://127.0.0.1:5173/node_modules/**"],
+      "log": {
+        "fileName": "${workspaceFolder}/node_modules/.cache/vscode-firefox-debug.log",
+        "fileLevel": {
+          "default": "Debug"
+        },
+        "consoleLevel": {
+          "default": "Warn"
+        }
+      }
+    }
+  ]
+}
