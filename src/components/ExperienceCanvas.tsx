@@ -2,7 +2,7 @@ import { Environment, Float, Preload, useGLTF } from '@react-three/drei';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import type { MutableRefObject } from 'react';
 import { Suspense, useEffect, useMemo, useRef } from 'react';
-import { Box3, type Group, MathUtils, Vector3 } from 'three';
+import { Box3, type Group, MathUtils, PCFShadowMap, Vector3 } from 'three';
 import { assetPath } from '../constants';
 import type { EveningStarVariant } from '../variants';
 
@@ -143,7 +143,7 @@ export function ExperienceCanvas({ onReady, variant }: ExperienceCanvasProps) {
         camera={{ position: [0, 0, 5.35], fov: 35, near: 0.1, far: 100 }}
         dpr={[1, 2]}
         gl={{ alpha: true, antialias: true, powerPreference: 'high-performance', preserveDrawingBuffer: true }}
-        shadows
+        shadows={{ type: PCFShadowMap }}
       >
         <fog attach="fog" args={[variant.fog, 9, 18]} />
         <ambientLight intensity={0.95} />
