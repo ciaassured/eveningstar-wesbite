@@ -83,7 +83,7 @@ async function currentPageY(page: Page) {
 }
 
 test('renders the Evening Star product page without browser errors', async ({ page }) => {
-  test.setTimeout(60000);
+  test.setTimeout(90000);
 
   const browserErrors: string[] = [];
   const modelResponses: string[] = [];
@@ -127,6 +127,14 @@ test('renders the Evening Star product page without browser errors', async ({ pa
   await expect.poll(() => currentPageY(page)).toBeGreaterThan(Math.round(maxScroll * 0.9));
   await page.waitForTimeout(300);
 
+  const flipControl = page.getByRole('button', { name: /show underside/i });
+  await expect(flipControl).toBeVisible();
+  await expect(flipControl).toHaveAttribute('aria-pressed', 'false');
+  await flipControl.click();
+  const returnControl = page.getByRole('button', { name: /show top side/i });
+  await expect(returnControl).toHaveAttribute('aria-pressed', 'true');
+  await page.waitForTimeout(300);
+
   const movedFrame = await canvasFrame(page);
   const movedDelta = imageDelta(firstFrame, movedFrame);
   expect(movedDelta).toBeGreaterThan(2);
@@ -140,6 +148,9 @@ test('renders the Evening Star product page without browser errors', async ({ pa
   await scrollToPageY(page, 0);
   await expect.poll(() => currentPageY(page)).toBe(0);
   await page.waitForTimeout(500);
+  await expect(page.locator('.inspection-control-panel')).toHaveAttribute('data-visible', 'false');
+  await expect(page.locator('.inspection-flip-control')).toBeDisabled();
+  await expect(page.locator('.inspection-flip-control')).toHaveAttribute('tabindex', '-1');
 
   const returnedFrame = await canvasFrame(page);
   const returnedDelta = imageDelta(firstFrame, returnedFrame);

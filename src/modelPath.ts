@@ -14,6 +14,8 @@ export type ModelPathVector = readonly [x: number, y: number, z: number];
 // - To hold the board during a sticky page section, add two stages with the
 //   same pose and different progress values. The board will stay there while
 //   the page scrolls through that range.
+// - MODEL_FLIP_CONTROL.visibleFromProgress controls when the Take a Look
+//   section's flip control becomes available.
 //
 // Good centered, top-down baseline:
 // - position: [0, 0, 0]
@@ -56,6 +58,18 @@ export const MODEL_MOTION = {
     yawAmount: 0.024,
     rollAmount: 0.018
   }
+} as const;
+
+export const MODEL_FLIP_CONTROL = {
+  // Whole-page scroll progress where the Take a Look control becomes available.
+  visibleFromProgress: {
+    desktop: 0.86,
+    compact: 0.88
+  },
+  // Local model rotation layered inside the scroll path pose when flipped.
+  rotationOffset: [Math.PI, 0, 0] as const,
+  flipSmoothing: 7.5,
+  scrollResetEpsilon: 0.002
 } as const;
 
 export const MODEL_PATH = {
@@ -119,19 +133,19 @@ export const MODEL_PATH = {
     {
       id: 'comparison-release',
       // Release from the dock and rejoin the normal product-page path.
-      progress: 0.77,
-      position: [0.04, -0.02, -0.1],
-      rotation: [0.42, 0.62, -0.22],
-      scale: 0.82,
+      progress: 0.87,
+      position: [-0.9, -0.02, -0.1],
+      rotation: [1.5, 0, 0],
+      scale: 0.78,
       pointerInfluence: 1,
       idleInfluence: 1,
-      cameraPosition: [0, 0, 5.72]
+      cameraPosition: [0, 0, 5.7]
     },
     {
       id: 'inspection',
-      // Inspection section: final pose near "Built to ship cleanly".
-      progress: 0.92,
-      position: [0, 0.5, 0],
+      // Take a Look section: final held pose for flipping between PCB sides.
+      progress: 0.98,
+      position: [0.58, 0.5, 0],
       rotation: [1.5, 0, 0],
       scale: 0.78,
       pointerInfluence: 1,
@@ -210,11 +224,11 @@ export const MODEL_PATH = {
     },
     {
       id: 'inspection',
-      // Compact inspection: lower than the implementation rail labels.
+      // Compact Take a Look: lower so the control and copy have breathing room.
       progress: 0.92,
-      position: [0, -0.55, -0.18],
+      position: [0, -0.86, -0.18],
       rotation: [0.32, -0.78, -0.16],
-      scale: 0.46,
+      scale: 0.44,
       pointerInfluence: 1,
       idleInfluence: 1,
       cameraPosition: [0, 0.25, 6.9]

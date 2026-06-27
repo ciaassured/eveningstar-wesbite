@@ -5,6 +5,7 @@ import { Suspense, useEffect, useMemo, useRef, useState } from 'react';
 import { Box3, type Group, MathUtils, Vector3, VSMShadowMap } from 'three';
 import { assetPath } from '../constants';
 import {
+  MODEL_FLIP_CONTROL,
   MODEL_MOTION,
   MODEL_PATH,
   MODEL_PATH_COMPACT_WIDTH,
@@ -17,6 +18,7 @@ const environmentUrl = assetPath('hdr/aircraft_workshop_01_1k.hdr');
 type ModelPathName = keyof typeof MODEL_PATH;
 
 type ExperienceCanvasProps = {
+  flipped: boolean;
   onReady: () => void;
   variant: EveningStarVariant;
 };
@@ -109,11 +111,23 @@ function useNormalizedPointer() {
   return pointer;
 }
 
-function BoardModel({ modelUrl, onReady, pointer }: { modelUrl: string; onReady: () => void; pointer: PointerRef }) {
+function BoardModel({
+  flipped,
+  modelUrl,
+  onReady,
+  pointer
+}: {
+  flipped: boolean;
+  modelUrl: string;
+  onReady: () => void;
+  pointer: PointerRef;
+}) {
   const motion = useRef<Group>(null);
+  const flipMotion = useRef<Group>(null);
   const gltf = useGLTF(modelUrl);
   const { size } = useThree();
   const targetPosition = useRef(new Vector3());
+  const flipRotation = useRef(new Vector3());
   const smoothedPointer = useRef({ x: 0, y: 0 });
 
   const scene = useMemo(() => gltf.scene.clone(true), [gltf.scene]);
@@ -142,7 +156,7 @@ function BoardModel({ modelUrl, onReady, pointer }: { modelUrl: string; onReady:
   }, [onReady, scene]);
 
   useFrame(({ clock }, delta) => {
-    if (!motion.current) {
+    if (!motion.current || !flipMotion.current) {
       return;
     }
 
@@ -194,12 +208,24 @@ function BoardModel({ modelUrl, onReady, pointer }: { modelUrl: string; onReady:
         pointerX * MODEL_MOTION.pointer.maxRotation[2] +
         idleRoll
     );
+
+    const flipDamping = 1 - Math.exp(-MODEL_FLIP_CONTROL.flipSmoothing * delta);
+    const flipAmount = flipped ? 1 : 0;
+
+    flipRotation.current.set(
+      MathUtils.lerp(flipRotation.current.x, MODEL_FLIP_CONTROL.rotationOffset[0] * flipAmount, flipDamping),
+      MathUtils.lerp(flipRotation.current.y, MODEL_FLIP_CONTROL.rotationOffset[1] * flipAmount, flipDamping),
+      MathUtils.lerp(flipRotation.current.z, MODEL_FLIP_CONTROL.rotationOffset[2] * flipAmount, flipDamping)
+    );
+    flipMotion.current.rotation.set(flipRotation.current.x, flipRotation.current.y, flipRotation.current.z);
   });
 
   return (
     <group ref={motion}>
-      <group scale={bounds.scale}>
-        <primitive object={scene} position={[-bounds.center.x, -bounds.center.y, -bounds.center.z]} />
+      <group ref={flipMotion}>
+        <group scale={bounds.scale}>
+          <primitive object={scene} position={[-bounds.center.x, -bounds.center.y, -bounds.center.z]} />
+        </group>
       </group>
     </group>
   );
@@ -299,7 +325,7 @@ function EnvironmentLighting() {
   return <Environment environmentIntensity={0.7} map={environment} />;
 }
 
-export function ExperienceCanvas({ onReady, variant }: ExperienceCanvasProps) {
+export function ExperienceCanvas({ flipped, onReady, variant }: ExperienceCanvasProps) {
   const pointer = useNormalizedPointer();
   const modelUrl = assetPath(variant.model);
 
@@ -318,7 +344,7 @@ export function ExperienceCanvas({ onReady, variant }: ExperienceCanvasProps) {
         <spotLight angle={0.5} intensity={22} penumbra={0.4} position={[0, 4, 5]} color="#ffffff" />
         <Suspense fallback={null}>
           <EnvironmentLighting />
-          <BoardModel key={variant.id} modelUrl={modelUrl} onReady={onReady} pointer={pointer} />
+          <BoardModel key={variant.id} flipped={flipped} modelUrl={modelUrl} onReady={onReady} pointer={pointer} />
           <Preload all />
         </Suspense>
         <CameraRig />

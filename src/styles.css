@@ -246,7 +246,7 @@ select {
 .comparison-product__tag,
 .comparison-table-wrap,
 .inspection-section__copy,
-.inspection-rail,
+.inspection-control-panel,
 .site-footer {
   position: relative;
   z-index: 4;
@@ -492,8 +492,7 @@ select {
 
 .hero-section__body,
 .statement-section__copy p,
-.inspection-section__copy p,
-.inspection-rail span {
+.inspection-section__copy p {
   font-size: 1.6rem;
   line-height: 1.14;
   text-transform: uppercase;
@@ -892,16 +891,15 @@ select {
   background: color-mix(in srgb, var(--ink) 10%, white);
 }
 
-.inspection-section__header svg,
-.inspection-rail svg {
+.inspection-section__header svg {
   color: var(--accent);
 }
 
 .inspection-section {
   align-items: end;
-  grid-template-columns: minmax(0, 1fr) minmax(340px, 560px);
+  grid-template-columns: minmax(280px, 0.82fr) minmax(340px, 560px);
   gap: 5vw;
-  min-height: 102svh;
+  min-height: 108svh;
 }
 
 .inspection-section__copy {
@@ -920,26 +918,113 @@ select {
   margin: 0;
 }
 
-.inspection-rail {
+.inspection-control-panel {
   display: grid;
-  gap: 10px;
   grid-column: 1;
+  align-self: end;
+  width: min(430px, 100%);
+  gap: 12px;
   margin-bottom: 16svh;
-  padding: 0;
-  list-style: none;
-}
-
-.inspection-rail li {
-  display: flex;
-  align-items: center;
-  width: fit-content;
-  min-height: 58px;
-  gap: 14px;
-  padding: 10px 14px;
+  padding: 14px;
   border: 1px solid var(--panel-border);
   border-radius: 6px;
   background: var(--panel);
   backdrop-filter: blur(14px);
+  box-shadow: 0 18px 60px rgba(16, 20, 18, 0.08);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translate3d(0, 14px, 0);
+  transition:
+    opacity 0.28s ease,
+    transform 0.28s ease,
+    visibility 0.28s ease;
+}
+
+.inspection-control-panel[data-visible="true"] {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translate3d(0, 0, 0);
+}
+
+.inspection-control-panel__status {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 52px;
+  gap: 16px;
+  padding: 10px 12px;
+  border: 1px solid var(--panel-border);
+  border-radius: 6px;
+  font-size: 1.25rem;
+  line-height: 1;
+  text-transform: uppercase;
+  background: rgba(247, 252, 251, 0.72);
+}
+
+.inspection-control-panel__status span {
+  color: var(--ink-soft);
+}
+
+.inspection-control-panel__status strong {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-variation-settings:
+    "wght" 740,
+    "wdth" 106;
+  text-align: right;
+}
+
+.inspection-flip-control {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  min-height: 64px;
+  gap: 12px;
+  padding: 12px 16px;
+  border: 1px solid var(--ink);
+  border-radius: 6px;
+  color: var(--paper-soft);
+  background: var(--ink);
+  cursor: pointer;
+  font-family: var(--font-display);
+  font-size: 1.08rem;
+  font-variation-settings:
+    "wght" 760,
+    "wdth" 106;
+  line-height: 1;
+  text-align: center;
+  text-transform: uppercase;
+  transition:
+    color 0.2s ease,
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.inspection-flip-control:hover {
+  color: var(--ink);
+  background: var(--accent);
+  transform: translate3d(0, -2px, 0);
+}
+
+.inspection-flip-control:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--accent) 70%, white);
+  outline-offset: 3px;
+}
+
+.inspection-flip-control[aria-pressed="true"] {
+  color: var(--ink);
+  border-color: color-mix(in srgb, var(--accent) 76%, var(--ink));
+  background: color-mix(in srgb, var(--accent) 78%, white);
+}
+
+.inspection-flip-control:disabled {
+  cursor: default;
+  transform: none;
 }
 
 .site-footer {
@@ -1144,7 +1229,7 @@ select {
   .hero-section__copy,
   .statement-section__copy,
   .inspection-section__copy,
-  .inspection-rail {
+  .inspection-control-panel {
     grid-column: 1;
   }
 
@@ -1205,7 +1290,7 @@ select {
     height: 42px;
   }
 
-  .inspection-rail,
+  .inspection-control-panel,
   .inspection-section__copy {
     margin-bottom: 0;
   }
@@ -1248,8 +1333,7 @@ select {
 
   .hero-section__body,
   .statement-section__copy p,
-  .inspection-section__copy p,
-  .inspection-rail span {
+  .inspection-section__copy p {
     font-size: 1.35rem;
   }
 

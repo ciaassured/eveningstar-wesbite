@@ -1,13 +1,14 @@
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { Activity, Cpu, Layers, ShieldCheck, Star, Trophy } from 'lucide-react';
+import { Activity, FlipVertical2, Star, Trophy } from 'lucide-react';
 import type { CSSProperties } from 'react';
-import { useEffect, useLayoutEffect, useState } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useState } from 'react';
 import { Background } from './components/Background';
 import { ExperienceCanvas } from './components/ExperienceCanvas';
 import { KineticText } from './components/KineticText';
 import { LoadingScreen } from './components/LoadingScreen';
 import { assetPath } from './constants';
+import { MODEL_FLIP_CONTROL, MODEL_PATH_COMPACT_WIDTH } from './modelPath';
 import { pickInitialEveningStarVariant } from './variants';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -22,15 +23,30 @@ const comparisonRows = [
 const initialVariant = pickInitialEveningStarVariant();
 
 type ThemeStyle = CSSProperties & Record<`--${string}`, string>;
+type ModelPathName = keyof typeof MODEL_FLIP_CONTROL.visibleFromProgress;
+
+function getPageScrollProgress() {
+  const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+  return maxScroll <= 0 ? 0 : Math.min(Math.max(window.scrollY / maxScroll, 0), 1);
+}
+
+function getActiveModelPathName(): ModelPathName {
+  return window.innerWidth <= MODEL_PATH_COMPACT_WIDTH ? 'compact' : 'desktop';
+}
 
 function App() {
   const [variant] = useState(initialVariant);
   const [modelReady, setModelReady] = useState(false);
+  const [flipped, setFlipped] = useState(false);
+  const [flipControlVisible, setFlipControlVisible] = useState(false);
   const stats = [
     ['01', 'Interactive GLB'],
     ['02', `${variant.label} PCB`],
     ['03', 'HDR-lit product stage']
   ];
+  const flipControlLabel = flipped ? 'Show top side' : 'Show underside';
+  const inspectionViewLabel = flipped ? 'Underside view' : 'Top side view';
+  const handleModelReady = useCallback(() => setModelReady(true), []);
 
   useEffect(() => {
     const favicon =
@@ -46,6 +62,46 @@ function App() {
       themeColor.content = variant.fog;
     }
   }, [variant]);
+
+  useEffect(() => {
+    let lastProgress = getPageScrollProgress();
+    let rafId = 0;
+
+    const updateFlipControl = () => {
+      rafId = 0;
+
+      const progress = getPageScrollProgress();
+      const pathName = getActiveModelPathName();
+      const visible = progress >= MODEL_FLIP_CONTROL.visibleFromProgress[pathName];
+
+      setFlipControlVisible(visible);
+
+      if (!visible || progress < lastProgress - MODEL_FLIP_CONTROL.scrollResetEpsilon) {
+        setFlipped(false);
+      }
+
+      lastProgress = progress;
+    };
+
+    const requestUpdate = () => {
+      if (rafId === 0) {
+        rafId = window.requestAnimationFrame(updateFlipControl);
+      }
+    };
+
+    updateFlipControl();
+    window.addEventListener('scroll', requestUpdate, { passive: true });
+    window.addEventListener('resize', requestUpdate);
+
+    return () => {
+      if (rafId !== 0) {
+        window.cancelAnimationFrame(rafId);
+      }
+
+      window.removeEventListener('scroll', requestUpdate);
+      window.removeEventListener('resize', requestUpdate);
+    };
+  }, []);
 
   useLayoutEffect(() => {
     const context = gsap.context(() => {
@@ -90,7 +146,7 @@ function App() {
   return (
     <div className="theme-root" data-variant={variant.id} style={variant.cssVariables as ThemeStyle}>
       <Background />
-      <ExperienceCanvas onReady={() => setModelReady(true)} variant={variant} />
+      <ExperienceCanvas flipped={flipped} onReady={handleModelReady} variant={variant} />
       <LoadingScreen ready={modelReady} />
 
       <main className="page-shell">
@@ -209,28 +265,32 @@ function App() {
           <div className="inspection-section__copy reveal-block">
             <div className="inspection-section__header">
               <Activity aria-hidden="true" size={28} strokeWidth={1.8} />
-              <p className="eyebrow">DEPLOYMENT SIGNAL</p>
+              <p className="eyebrow">PCB INSPECTION</p>
             </div>
-            <h2 id="inspection-title">Built to ship cleanly</h2>
+            <h2 id="inspection-title">Take a look</h2>
             <p>
-              The repository includes typed builds, linting, browser rendering checks, pinned Pages actions, and
-              Dependabot updates for npm and workflow dependencies.
+              The live Eveningstar model parks in a held inspection pose here, with both PCB faces available from the
+              same bottom-stage view.
             </p>
           </div>
-          <ul className="inspection-rail reveal-block" aria-label="Implementation notes">
-            <li>
-              <Layers aria-hidden="true" size={22} strokeWidth={1.8} />
-              <span>React / Vite / Three</span>
-            </li>
-            <li>
-              <Cpu aria-hidden="true" size={22} strokeWidth={1.8} />
-              <span>GLB + HDR public assets</span>
-            </li>
-            <li>
-              <ShieldCheck aria-hidden="true" size={22} strokeWidth={1.8} />
-              <span>Pages workflow pinned by SHA</span>
-            </li>
-          </ul>
+          <div aria-hidden={!flipControlVisible} className="inspection-control-panel" data-visible={flipControlVisible}>
+            <div className="inspection-control-panel__status">
+              <span>Current side</span>
+              <strong aria-live="polite">{inspectionViewLabel}</strong>
+            </div>
+            <button
+              aria-pressed={flipped}
+              className="inspection-flip-control"
+              data-visible={flipControlVisible}
+              disabled={!flipControlVisible}
+              onClick={() => setFlipped((current) => !current)}
+              tabIndex={flipControlVisible ? 0 : -1}
+              type="button"
+            >
+              <FlipVertical2 aria-hidden="true" size={22} strokeWidth={1.9} />
+              <span>{flipControlLabel}</span>
+            </button>
+          </div>
         </section>
 
         <footer className="site-footer">
