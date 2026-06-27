@@ -60,6 +60,15 @@
   }
 }
 
+@keyframes social-icon-bounce {
+  from {
+    transform: translate3d(0, -1px, 0) rotate(-1.4deg);
+  }
+  to {
+    transform: translate3d(0, 2px, 0) rotate(1.6deg);
+  }
+}
+
 @keyframes signal-step {
   from {
     background-position: center 0;

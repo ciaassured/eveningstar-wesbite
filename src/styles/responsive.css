@@ -31,6 +31,11 @@
     left: 22px;
   }
 
+  .social-links {
+    top: 52px;
+    left: 22px;
+  }
+
   .hero-section,
   .statement-section,
   .comparison-section,
@@ -131,6 +136,24 @@
 
   .loader__title {
     font-size: 3.25rem;
+  }
+
+  .social-links__button {
+    width: 42px;
+    height: 42px;
+  }
+
+  .site-mark {
+    width: 42px;
+  }
+
+  .social-links__icon {
+    width: 23px;
+    height: 23px;
+  }
+
+  .social-links__label {
+    max-width: calc(100vw - 86px);
   }
 
   .hero-title {

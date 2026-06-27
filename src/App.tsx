@@ -7,6 +7,7 @@ import { Background } from './components/Background';
 import { ExperienceCanvas } from './components/ExperienceCanvas';
 import { KineticText } from './components/KineticText';
 import { LoadingScreen } from './components/LoadingScreen';
+import { SocialLinks } from './components/SocialLinks';
 import { assetPath } from './constants';
 import { MODEL_FLIP_CONTROL } from './modelPath';
 import { getModelPathName, getPageScrollProgress } from './modelPathRuntime';
@@ -143,6 +144,7 @@ function App() {
       <main className="page-shell">
         <section className="hero-section" aria-labelledby="hero-title">
           <div className="site-mark">CIA</div>
+          <SocialLinks />
           <div className="hero-section__copy reveal-block">
             <p className="eyebrow">PCB DISPLAY / CONTROLLED INTELLIGENCE AVIONICS</p>
             <h1 id="hero-title" className="hero-heading" aria-label="Eveningstar">

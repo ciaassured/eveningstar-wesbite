@@ -35,6 +35,42 @@ test('renders the Eveningstar product page without browser errors', async ({ pag
   await expect(page.locator('.loader__title')).toHaveText('Eveningstar');
   await page.waitForTimeout(750);
 
+  const githubLink = page.getByRole('link', { name: 'CIA GitHub' });
+  const youtubeLink = page.getByRole('link', { name: 'CIA YouTube' });
+
+  await expect(githubLink).toBeVisible();
+  await expect(githubLink).toHaveAttribute('href', 'https://github.com/ciaassured/EveningStar');
+  await expect(githubLink).toHaveAttribute('target', '_blank');
+  await expect(githubLink).toHaveAttribute('rel', 'noreferrer');
+  await expect(youtubeLink).toBeVisible();
+  await expect(youtubeLink).toHaveAttribute('href', 'https://www.youtube.com/@ciaassured');
+  await expect(youtubeLink).toHaveAttribute('target', '_blank');
+  await expect(youtubeLink).toHaveAttribute('rel', 'noreferrer');
+
+  const githubLabel = githubLink.locator('.social-links__label');
+  const youtubeLabel = youtubeLink.locator('.social-links__label');
+  await expect(githubLabel).toHaveText('github/EveningStar');
+  await expect(youtubeLabel).toHaveText('youtube/@ciaassured');
+  await expect(githubLabel).toHaveCSS('opacity', '0');
+
+  await page.keyboard.press('Tab');
+  await expect(githubLink).toBeFocused();
+  await expect(githubLabel).toHaveCSS('opacity', '1');
+
+  await page.keyboard.press('Tab');
+  await expect(youtubeLink).toBeFocused();
+  await expect(youtubeLabel).toHaveCSS('opacity', '1');
+  await youtubeLink.evaluate((link) => (link as HTMLElement).blur());
+
+  const githubBox = await githubLink.boundingBox();
+  expect(githubBox).not.toBeNull();
+  await githubLink.hover();
+  await expect(githubLink).toHaveCSS('transform', 'matrix(1.14, 0, 0, 1.14, 0, 0)');
+  await expect(githubLabel).toHaveCSS('opacity', '1');
+  const hoveredGithubBox = await githubLink.boundingBox();
+  expect(hoveredGithubBox).not.toBeNull();
+  expect(hoveredGithubBox?.width ?? 0).toBeGreaterThan((githubBox?.width ?? 0) + 2);
+
   const canvas = page.locator('canvas').first();
   await expect(canvas).toBeVisible();
   await page.waitForTimeout(1250);
