@@ -218,7 +218,7 @@ function App() {
               <article className="comparison-product comparison-product--model" aria-label="Eveningstar live model">
                 <div className="comparison-product__tag">
                   <span>Eveningstar</span>
-                  <strong>Live GLB</strong>
+                  <strong>Next-Generation Adapter</strong>
                 </div>
               </article>
 
