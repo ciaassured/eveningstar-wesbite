@@ -82,7 +82,7 @@ async function currentPageY(page: Page) {
   );
 }
 
-test('renders the Evening Star product page without browser errors', async ({ page }) => {
+test('renders the Eveningstar product page without browser errors', async ({ page }) => {
   test.setTimeout(90000);
 
   const browserErrors: string[] = [];
@@ -101,7 +101,7 @@ test('renders the Evening Star product page without browser errors', async ({ pa
   });
 
   await page.goto('./?variant=blue', { waitUntil: 'networkidle' });
-  await expect(page.getByRole('heading', { name: /Evening Star/i })).toBeVisible();
+  await expect(page.getByRole('heading', { name: /Eveningstar/i })).toBeVisible();
   await expect(page.locator('.site-mark')).toBeVisible();
   await expect(page.locator('.hero-heading__star')).toBeVisible();
   await expect(page.locator('.theme-root')).toHaveAttribute('data-variant', 'blue');

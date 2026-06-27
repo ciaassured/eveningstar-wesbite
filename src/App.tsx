@@ -154,7 +154,7 @@ function App() {
           <div className="site-mark">CIA</div>
           <div className="hero-section__copy reveal-block">
             <p className="eyebrow">PCB DISPLAY / CONTROLLED INTELLIGENCE AVIONICS</p>
-            <h1 id="hero-title" className="hero-heading" aria-label="Evening Star">
+            <h1 id="hero-title" className="hero-heading" aria-label="Eveningstar">
               <KineticText as="span" className="hero-title" text="Evening" />
               <span className="hero-heading__line hero-heading__line--star">
                 <KineticText as="span" className="hero-title hero-title--second" outline text="Star" />
@@ -164,7 +164,7 @@ function App() {
               </span>
             </h1>
             <p className="hero-section__body">
-              A scrolling product stage for the Evening Star PCB, with the board model held at the center of the
+              A scrolling product stage for the Eveningstar PCB, with the board model held at the center of the
               experience and the interface built around motion, depth, and inspection.
             </p>
             <ul className="stat-strip" aria-label="Project highlights">

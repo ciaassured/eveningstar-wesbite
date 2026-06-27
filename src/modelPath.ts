@@ -77,7 +77,7 @@ export const MODEL_PATH = {
   desktop: [
     {
       id: 'hero',
-      // Hero section: board sits left of the Evening Star heading and intro copy.
+      // Hero section: board sits left of the Eveningstar heading and intro copy.
       progress: 0,
       position: [-1.58, -0.12, 0],
       rotation: [0.58, -0.42, -0.14],
