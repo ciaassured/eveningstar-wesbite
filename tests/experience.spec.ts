@@ -110,6 +110,7 @@ test('renders the Evening Star product page without browser errors', async ({ pa
   const loader = page.locator('.loader');
   await expect(loader).toHaveAttribute('aria-hidden', 'true', { timeout: 15000 });
   await expect(loader).toHaveClass(/loader--hidden/);
+  await expect(page.locator('.loader__title')).toHaveText('Eveningstar');
   await page.waitForTimeout(750);
 
   const canvas = page.locator('canvas').first();

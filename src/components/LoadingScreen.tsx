@@ -3,8 +3,9 @@ import { useEffect, useMemo, useState } from 'react';
 import { usePrefersReducedMotion } from '../hooks/usePrefersReducedMotion';
 
 const glyphs = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789/\\+-#*';
-const finalTitle = 'Evening Star';
+const finalTitle = 'Eveningstar';
 const minimumLoaderMs = 3000;
+const titleResolveMs = 1600;
 
 type LoadingScreenProps = {
   ready: boolean;
@@ -29,6 +30,7 @@ export function LoadingScreen({ ready }: LoadingScreenProps) {
   const prefersReducedMotion = usePrefersReducedMotion();
   const [displayTitle, setDisplayTitle] = useState(finalTitle);
   const [minimumElapsed, setMinimumElapsed] = useState(false);
+  const [titleResolved, setTitleResolved] = useState(prefersReducedMotion);
   const [hidden, setHidden] = useState(false);
 
   const titleCharacters = useMemo(() => characterTokens(displayTitle), [displayTitle]);
@@ -40,14 +42,33 @@ export function LoadingScreen({ ready }: LoadingScreenProps) {
 
   useEffect(() => {
     if (prefersReducedMotion) {
+      setDisplayTitle(finalTitle);
+      setTitleResolved(true);
       return;
     }
 
-    let frame = 0;
+    setTitleResolved(false);
     let animationFrame = 0;
+    let frame = 0;
+    let resolved = false;
     const finalCharacters = Array.from(finalTitle);
 
+    const resolveTitle = () => {
+      if (resolved) {
+        return;
+      }
+
+      resolved = true;
+      window.cancelAnimationFrame(animationFrame);
+      setDisplayTitle(finalTitle);
+      setTitleResolved(true);
+    };
+
     const tick = () => {
+      if (resolved) {
+        return;
+      }
+
       frame += 1;
       setDisplayTitle(
         finalCharacters
@@ -69,23 +90,27 @@ export function LoadingScreen({ ready }: LoadingScreenProps) {
       if (frame < 80) {
         animationFrame = window.requestAnimationFrame(tick);
       } else {
-        setDisplayTitle(finalTitle);
+        resolveTitle();
       }
     };
 
+    const resolveTimeout = window.setTimeout(resolveTitle, titleResolveMs);
     animationFrame = window.requestAnimationFrame(tick);
 
-    return () => window.cancelAnimationFrame(animationFrame);
+    return () => {
+      window.clearTimeout(resolveTimeout);
+      window.cancelAnimationFrame(animationFrame);
+    };
   }, [prefersReducedMotion]);
 
   useEffect(() => {
-    if (!ready || !minimumElapsed) {
+    if (!ready || !minimumElapsed || !titleResolved) {
       return;
     }
 
     const timeout = window.setTimeout(() => setHidden(true), prefersReducedMotion ? 150 : 650);
     return () => window.clearTimeout(timeout);
-  }, [minimumElapsed, prefersReducedMotion, ready]);
+  }, [minimumElapsed, prefersReducedMotion, ready, titleResolved]);
 
   return (
     <div aria-hidden={hidden} className={`loader ${hidden ? 'loader--hidden' : ''}`}>
