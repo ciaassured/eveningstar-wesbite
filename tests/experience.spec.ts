@@ -19,6 +19,15 @@ test('renders the Eveningstar product page without browser errors', async ({ pag
   await expect(page.locator('.hero-heading__star')).toBeVisible();
   await expect(page.locator('.theme-root')).toHaveAttribute('data-variant', 'blue');
   await expect(page.locator('head link[rel~="icon"]')).toHaveAttribute('href', /favicons\/favicon-blue\.svg/);
+  await expect(page.locator('head link[rel="canonical"]')).toHaveAttribute(
+    'href',
+    'https://ciaassured.github.io/eveningstar-wesbite/'
+  );
+  await expect(page.locator('meta[property="og:image"]')).toHaveAttribute(
+    'content',
+    'https://ciaassured.github.io/eveningstar-wesbite/social/eveningstar-og.png'
+  );
+  await expect(page.locator('meta[name="twitter:card"]')).toHaveAttribute('content', 'summary_large_image');
   await expect(page.locator('meta[name="theme-color"]')).toHaveAttribute('content', '#d8ecfb');
   const loader = page.locator('.loader');
   await expect(loader).toHaveAttribute('aria-hidden', 'true', { timeout: 15000 });
