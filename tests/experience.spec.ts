@@ -35,8 +35,8 @@ async function canvasFrame(page: Page): Promise<CanvasFrame> {
 
     const width = gl.drawingBufferWidth;
     const height = gl.drawingBufferHeight;
-    const xStep = Math.max(1, Math.floor(width / 24));
-    const yStep = Math.max(1, Math.floor(height / 24));
+    const xStep = Math.max(1, Math.floor(width / 36));
+    const yStep = Math.max(1, Math.floor(height / 36));
     const pixel = new Uint8Array(4);
     const samples: number[] = [];
     let colored = 0;
@@ -54,6 +54,32 @@ async function canvasFrame(page: Page): Promise<CanvasFrame> {
 
     return { colored, samples };
   });
+}
+
+async function scrollToPageY(page: Page, target: number) {
+  await page.evaluate((scrollTarget) => {
+    document.documentElement.style.scrollBehavior = 'auto';
+    document.body.style.scrollBehavior = 'auto';
+
+    const scroller = document.scrollingElement ?? document.documentElement;
+    scroller.scrollTop = scrollTarget;
+    document.documentElement.scrollTop = scrollTarget;
+    document.body.scrollTop = scrollTarget;
+    window.scrollTo({ left: 0, top: scrollTarget, behavior: 'auto' });
+  }, target);
+}
+
+async function currentPageY(page: Page) {
+  return page.evaluate(() =>
+    Math.round(
+      Math.max(
+        window.scrollY,
+        document.documentElement.scrollTop,
+        document.body.scrollTop,
+        document.scrollingElement?.scrollTop ?? 0
+      )
+    )
+  );
 }
 
 test('renders the Evening Star product page without browser errors', async ({ page }) => {
@@ -79,9 +105,7 @@ test('renders the Evening Star product page without browser errors', async ({ pa
   await expect(page.locator('.site-mark')).toBeVisible();
   await expect(page.locator('.hero-heading__star')).toBeVisible();
   await expect(page.locator('.theme-root')).toHaveAttribute('data-variant', 'blue');
-  await expect
-    .poll(() => page.evaluate(() => document.querySelector<HTMLLinkElement>('link[rel~="icon"]')?.href ?? ''))
-    .toContain('/favicons/favicon-blue.svg');
+  await expect(page.locator('head link[rel~="icon"]')).toHaveAttribute('href', /favicons\/favicon-blue\.svg/);
   await expect(page.locator('meta[name="theme-color"]')).toHaveAttribute('content', '#d8ecfb');
   const loader = page.locator('.loader');
   await expect(loader).toHaveAttribute('aria-hidden', 'true', { timeout: 15000 });
@@ -97,10 +121,28 @@ test('renders the Evening Star product page without browser errors', async ({ pa
   expect(modelResponses.length).toBeGreaterThan(0);
 
   await page.mouse.move(72, 84);
-  await page.evaluate(() => window.scrollTo(0, window.innerHeight * 1.2));
-  await page.waitForTimeout(750);
+  const maxScroll = await page.evaluate(() => document.documentElement.scrollHeight - window.innerHeight);
+  await scrollToPageY(page, maxScroll);
+  await expect.poll(() => currentPageY(page)).toBeGreaterThan(Math.round(maxScroll * 0.9));
+  await page.waitForTimeout(300);
 
   const movedFrame = await canvasFrame(page);
-  expect(imageDelta(firstFrame, movedFrame)).toBeGreaterThan(2);
+  const movedDelta = imageDelta(firstFrame, movedFrame);
+  expect(movedDelta).toBeGreaterThan(2);
+
+  const viewport = page.viewportSize();
+
+  if (viewport) {
+    await page.mouse.move(viewport.width / 2, viewport.height / 2);
+  }
+
+  await scrollToPageY(page, 0);
+  await expect.poll(() => currentPageY(page)).toBe(0);
+  await page.waitForTimeout(500);
+
+  const returnedFrame = await canvasFrame(page);
+  const returnedDelta = imageDelta(firstFrame, returnedFrame);
+  expect(returnedDelta).toBeLessThan(movedDelta * 0.85);
+  expect(returnedDelta).toBeLessThan(240);
   expect(browserErrors).toEqual([]);
 });

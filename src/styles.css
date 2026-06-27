@@ -108,6 +108,33 @@ select {
   overflow: hidden;
 }
 
+.model-path-debug {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  z-index: 6;
+  display: grid;
+  width: min(320px, calc(100vw - 32px));
+  gap: 4px;
+  padding: 12px;
+  border: 1px solid var(--panel-border);
+  border-radius: 6px;
+  font-family: var(--font-mono);
+  font-size: 1rem;
+  line-height: 1;
+  color: var(--ink);
+  background: var(--panel-strong);
+  pointer-events: none;
+}
+
+.model-path-debug strong {
+  font-family: var(--font-display);
+  font-variation-settings:
+    "wght" 740,
+    "wdth" 104;
+  text-transform: uppercase;
+}
+
 .ambient {
   z-index: 0;
   background:
