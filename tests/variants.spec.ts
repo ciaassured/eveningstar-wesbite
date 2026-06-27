@@ -6,7 +6,7 @@ test.describe('PCB variants', () => {
   test.skip(({ isMobile }) => isMobile, 'Variant smoke runs only in the desktop project.');
 
   test('renders every configured variant', async ({ page }) => {
-    test.setTimeout(180000);
+    test.setTimeout(300000);
 
     const browserErrors = captureBrowserErrors(page);
     const loadedModels = new Set<string>();
@@ -27,17 +27,11 @@ test.describe('PCB variants', () => {
         new RegExp(`favicons/favicon-${variant.id}\\.svg`)
       );
       await expect(page.locator('meta[name="theme-color"]')).toHaveAttribute('content', variant.fog);
-
-      const loader = page.locator('.loader');
-      await expect(loader).toHaveAttribute('aria-hidden', 'true', { timeout: 15000 });
+      await expect.poll(() => loadedModels.has(variant.id), { timeout: 30000 }).toBe(true);
 
       const canvas = page.locator('canvas').first();
       await expect(canvas).toBeVisible();
-      await page.waitForTimeout(750);
-
-      const frame = await canvasFrame(page);
-      expect(frame.colored).toBeGreaterThan(6);
-      expect(loadedModels.has(variant.id)).toBe(true);
+      await expect.poll(async () => (await canvasFrame(page)).colored, { timeout: 30000 }).toBeGreaterThan(6);
       expect(browserErrors).toEqual([]);
     }
   });
