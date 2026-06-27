@@ -32,6 +32,10 @@ VS Code has a Firefox launch configuration named `Debug Evening Star`. It starts
 
 The app picks a random PCB variant on normal page loads. Use `?variant=blue`, `?variant=green`, `?variant=purple`, `?variant=red`, `?variant=yellow`, `?variant=white`, or `?variant=black` for deterministic local QA.
 
+## Model Path Editing
+
+`src/modelPath.ts` is intentionally structured so a user can tune the scrolling GLB path without digging through rendering code. Keep path stages clearly named and commented, especially for magnetic settle or hold moments. Prefer obvious data edits, such as repeated poses for scroll holds, over hiding motion behavior in separate timelines unless there is a strong reason.
+
 ## Deployment
 
 The intended remote is `ciaassured/eveningstar-wesbite`. Keep the repository private until the user asks to make it public.

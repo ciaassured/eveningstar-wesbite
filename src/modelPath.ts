@@ -11,6 +11,9 @@ export type ModelPathVector = readonly [x: number, y: number, z: number];
 // - scale: model size. Larger is closer/bigger.
 // - cameraPosition: [x, y, z]. z is camera zoom; smaller z feels closer.
 // - pointerInfluence / idleInfluence: per-section strength for mouse and idle motion.
+// - To hold the board during a sticky page section, add two stages with the
+//   same pose and different progress values. The board will stay there while
+//   the page scrolls through that range.
 //
 // Good centered, top-down baseline:
 // - position: [0, 0, 0]
@@ -72,21 +75,54 @@ export const MODEL_PATH = {
     {
       id: 'statement',
       // Statement section: lines up with "PCB presence, not a static render".
-      progress: 0.27,
-      position: [-1.08, -0.08, -0.04],
-      rotation: [0.5, -0.04, -0.16],
+      progress: 0.24,
+      position: [-1.08, 0, -0.04],
+      rotation: [1.5, -1.5, 0],
       scale: 0.9,
       pointerInfluence: 1,
       idleInfluence: 1,
       cameraPosition: [0, 0, 5.48]
     },
     {
-      id: 'features',
-      // Feature section: bridge between the feature copy and feature cards.
-      progress: 0.58,
-      position: [0.14, -0.02, -0.11],
+      id: 'comparison-approach',
+      // Comparison section: pull toward the live-model dock before the sticky panel locks in.
+      progress: 0.42,
+      position: [-0.9, 0.15, -0.16],
+      rotation: [1.5, -1.5, 0],
+      scale: 0.5,
+      pointerInfluence: 0.55,
+      idleInfluence: 0.75,
+      cameraPosition: [0, 0, 5.86]
+    },
+    {
+      id: 'comparison-dock',
+      // Fast magnetic settle into the transparent dock beside the greyed Morningstar card.
+      progress: 0.5,
+      position: [-0.9, 0.15, -0.16],
+      rotation: [1.5, -1.5, 0],
+      scale: 0.3,
+      pointerInfluence: 0.18,
+      idleInfluence: 0.48,
+      cameraPosition: [0, 0, 6.02]
+    },
+    {
+      id: 'comparison-hold',
+      // Same pose as comparison-dock: this keeps the board parked while the table scrolls.
+      progress: 0.68,
+      position: [-0.9, 0.15, -0.16],
+      rotation: [1.5, -1.5, 0],
+      scale: 0.3,
+      pointerInfluence: 0.18,
+      idleInfluence: 0.48,
+      cameraPosition: [0, 0, 6.02]
+    },
+    {
+      id: 'comparison-release',
+      // Release from the dock and rejoin the normal product-page path.
+      progress: 0.77,
+      position: [0.04, -0.02, -0.1],
       rotation: [0.42, 0.62, -0.22],
-      scale: 0.84,
+      scale: 0.82,
       pointerInfluence: 1,
       idleInfluence: 1,
       cameraPosition: [0, 0, 5.72]
@@ -94,7 +130,7 @@ export const MODEL_PATH = {
     {
       id: 'inspection',
       // Inspection section: final pose near "Built to ship cleanly".
-      progress: 0.9,
+      progress: 0.92,
       position: [0, 0.5, 0],
       rotation: [1.5, 0, 0],
       scale: 0.78,
@@ -120,7 +156,7 @@ export const MODEL_PATH = {
     {
       id: 'statement',
       // Compact statement: board moves up as the first body section enters.
-      progress: 0.27,
+      progress: 0.24,
       position: [0, -0.22, -0.05],
       rotation: [0.5, 0.1, -0.18],
       scale: 0.74,
@@ -129,12 +165,45 @@ export const MODEL_PATH = {
       cameraPosition: [0, 0.25, 6.38]
     },
     {
-      id: 'features',
-      // Compact features: centered bridge through the feature cards.
-      progress: 0.58,
-      position: [0, 0.18, -0.12],
+      id: 'comparison-approach',
+      // Compact comparison: move toward the left-hand model dock above the table.
+      progress: 0.41,
+      position: [-0.26, 0.46, -0.12],
+      rotation: [0.5, -0.16, -0.12],
+      scale: 0.32,
+      pointerInfluence: 0.45,
+      idleInfluence: 0.7,
+      cameraPosition: [0, 0.25, 6.72]
+    },
+    {
+      id: 'comparison-dock',
+      // Fast magnetic settle into the transparent model dock.
+      progress: 0.49,
+      position: [-0.3, 0.5, -0.16],
+      rotation: [0.58, -0.08, -0.08],
+      scale: 0.28,
+      pointerInfluence: 0.16,
+      idleInfluence: 0.44,
+      cameraPosition: [0, 0.25, 6.92]
+    },
+    {
+      id: 'comparison-hold',
+      // Same pose as comparison-dock: this keeps the board parked through the sticky comparison.
+      progress: 0.69,
+      position: [-0.3, 0.5, -0.16],
+      rotation: [0.58, -0.08, -0.08],
+      scale: 0.28,
+      pointerInfluence: 0.16,
+      idleInfluence: 0.44,
+      cameraPosition: [0, 0.25, 6.92]
+    },
+    {
+      id: 'comparison-release',
+      // Release from the dock and rejoin the normal product-page path.
+      progress: 0.78,
+      position: [0, 0.12, -0.12],
       rotation: [0.4, 0.68, -0.22],
-      scale: 0.66,
+      scale: 0.62,
       pointerInfluence: 1,
       idleInfluence: 1,
       cameraPosition: [0, 0.25, 6.63]
@@ -142,7 +211,7 @@ export const MODEL_PATH = {
     {
       id: 'inspection',
       // Compact inspection: lower than the implementation rail labels.
-      progress: 0.9,
+      progress: 0.92,
       position: [0, -0.55, -0.18],
       rotation: [0.32, -0.78, -0.16],
       scale: 0.46,

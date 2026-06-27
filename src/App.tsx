@@ -1,6 +1,6 @@
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { Activity, Cpu, Layers, RadioTower, ShieldCheck, Star } from 'lucide-react';
+import { Activity, Cpu, Layers, ShieldCheck, Star, Trophy } from 'lucide-react';
 import type { CSSProperties } from 'react';
 import { useEffect, useLayoutEffect, useState } from 'react';
 import { Background } from './components/Background';
@@ -12,22 +12,11 @@ import { pickInitialEveningStarVariant } from './variants';
 
 gsap.registerPlugin(ScrollTrigger);
 
-const featureCards = [
-  {
-    icon: Cpu,
-    label: 'Core board',
-    copy: 'A product-first view of the Evening Star PCB, framed for inspection instead of decoration.'
-  },
-  {
-    icon: RadioTower,
-    label: 'Signal field',
-    copy: 'Animated traces and variant-tuned cloud motion keep the page tied to electronics and telemetry.'
-  },
-  {
-    icon: ShieldCheck,
-    label: 'Assured flow',
-    copy: 'Pinned deployment, typed source, browser checks, and dependency tracking are built in.'
-  }
+const comparisonRows = [
+  { label: 'Open source', eveningStar: 'Yes', morningstar: 'No' },
+  { label: 'Really cool', eveningStar: 'Yes', morningstar: 'No' },
+  { label: 'Cost effective', eveningStar: 'Yes', morningstar: 'No' },
+  { label: 'Made by CIA', eveningStar: 'Yes', morningstar: 'No' }
 ];
 
 const initialVariant = pickInitialEveningStarVariant();
@@ -154,24 +143,65 @@ function App() {
           </div>
         </section>
 
-        <section className="feature-section" aria-labelledby="feature-title">
-          <div className="feature-section__copy reveal-block">
-            <p className="eyebrow">EVENING STAR / FIRST ITERATION</p>
-            <h2 id="feature-title">Focused single-page display</h2>
-            <p>
-              This first pass keeps the site deliberately direct: no navigation, no marketing detour, just the board,
-              the brand mark, and a set of production checks ready for GitHub Pages.
-            </p>
-          </div>
+        <section className="comparison-section" aria-labelledby="comparison-title">
+          <div className="comparison-section__stage">
+            <div className="comparison-section__header comparison-strip">
+              <p className="eyebrow">ADAPTER COMPARISON</p>
+              <h2 id="comparison-title">
+                <span className="comparison-title-line">
+                  <KineticText as="span" text="Eveningstar" />
+                  <span className="comparison-title-trophy" aria-hidden="true">
+                    <Trophy className="comparison-title-trophy__icon" strokeWidth={2.15} />
+                  </span>
+                </span>
+                <KineticText as="span" outline text="wins the dock" />
+              </h2>
+            </div>
 
-          <div className="feature-grid reveal-block">
-            {featureCards.map(({ icon: Icon, label, copy }) => (
-              <article className="feature-card" key={label}>
-                <Icon aria-hidden="true" size={24} strokeWidth={1.8} />
-                <h3>{label}</h3>
-                <p>{copy}</p>
+            <div className="comparison-matchup">
+              <article className="comparison-product comparison-product--model" aria-label="Eveningstar live model">
+                <div className="comparison-product__tag">
+                  <span>Eveningstar</span>
+                  <strong>Live GLB</strong>
+                </div>
               </article>
-            ))}
+
+              <article className="comparison-product comparison-product--morningstar comparison-strip">
+                <div className="comparison-product__image-frame">
+                  <img alt="Morningstar adapter" src={assetPath('images/morningstar-adapter.png')} />
+                </div>
+                <div className="comparison-product__tag">
+                  <span>Morningstar</span>
+                  <strong>Legacy adapter</strong>
+                </div>
+              </article>
+            </div>
+
+            <div className="comparison-table-wrap comparison-strip">
+              <table className="comparison-table">
+                <caption>Adapter capability comparison</caption>
+                <thead>
+                  <tr>
+                    <th scope="col">Signal</th>
+                    <th scope="col">Eveningstar</th>
+                    <th scope="col">Morningstar</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {comparisonRows.map((row) => (
+                    <tr key={row.label}>
+                      <th scope="row">{row.label}</th>
+                      <td>
+                        <span className="comparison-table__yes">{row.eveningStar}</span>
+                      </td>
+                      <td>
+                        <span className="comparison-table__no">{row.morningstar}</span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         </section>
 
@@ -205,7 +235,7 @@ function App() {
 
         <footer className="site-footer">
           <p>CIA</p>
-          <KineticText as="strong" text="Evening Star" />
+          <KineticText as="strong" text="Eveningstar" />
         </footer>
       </main>
     </div>
