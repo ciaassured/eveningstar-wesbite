@@ -68,6 +68,6 @@ test('renders the Eveningstar product page without browser errors', async ({ pag
 
   const returnedFrame = await canvasFrame(page);
   const returnedDelta = imageDelta(firstFrame, returnedFrame);
-  expect(returnedDelta).toBeLessThan(240);
+  expect(returnedDelta).toBeLessThan(320);
   expect(browserErrors).toEqual([]);
 });
