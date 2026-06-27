@@ -4,18 +4,17 @@ import type { MutableRefObject } from 'react';
 import { Suspense, useEffect, useMemo, useRef, useState } from 'react';
 import { Box3, type Group, MathUtils, Vector3, VSMShadowMap } from 'three';
 import { assetPath } from '../constants';
+import { MODEL_FLIP_CONTROL, MODEL_MOTION, MODEL_PATH, type ModelPathVector } from '../modelPath';
 import {
-  MODEL_FLIP_CONTROL,
-  MODEL_MOTION,
-  MODEL_PATH,
-  MODEL_PATH_COMPACT_WIDTH,
-  type ModelPathStage,
-  type ModelPathVector
-} from '../modelPath';
+  getModelPathName,
+  getModelPathSegment,
+  getPageScrollProgress,
+  interpolateNumber,
+  type ModelPathName
+} from '../modelPathRuntime';
 import type { EveningStarVariant } from '../variants';
 
 const environmentUrl = assetPath('hdr/aircraft_workshop_01_1k.hdr');
-type ModelPathName = keyof typeof MODEL_PATH;
 
 type ExperienceCanvasProps = {
   flipped: boolean;
@@ -24,46 +23,6 @@ type ExperienceCanvasProps = {
 };
 
 type PointerRef = MutableRefObject<{ x: number; y: number; active: boolean }>;
-
-function getScrollProgress() {
-  const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
-  return maxScroll <= 0 ? 0 : MathUtils.clamp(window.scrollY / maxScroll, 0, 1);
-}
-
-function getModelPathName(width: number): ModelPathName {
-  return width <= MODEL_PATH_COMPACT_WIDTH ? 'compact' : 'desktop';
-}
-
-function getModelPathSegment(path: readonly ModelPathStage[], progress: number) {
-  const firstStage = path[0];
-
-  if (progress <= firstStage.progress) {
-    return { from: firstStage, to: firstStage, amount: 0 };
-  }
-
-  for (let index = 1; index < path.length; index += 1) {
-    const nextStage = path[index];
-
-    if (progress <= nextStage.progress) {
-      const previousStage = path[index - 1];
-      const stageDistance = nextStage.progress - previousStage.progress || 1;
-      const linearAmount = MathUtils.clamp((progress - previousStage.progress) / stageDistance, 0, 1);
-
-      return {
-        from: previousStage,
-        to: nextStage,
-        amount: MathUtils.smoothstep(linearAmount, 0, 1)
-      };
-    }
-  }
-
-  const lastStage = path[path.length - 1];
-  return { from: lastStage, to: lastStage, amount: 0 };
-}
-
-function interpolateNumber(from: number, to: number, amount: number) {
-  return MathUtils.lerp(from, to, amount);
-}
 
 function setInterpolatedVector(target: Vector3, from: ModelPathVector, to: ModelPathVector, amount: number) {
   target.set(
@@ -160,7 +119,7 @@ function BoardModel({
       return;
     }
 
-    const progress = getScrollProgress();
+    const progress = getPageScrollProgress();
     const pathName = getModelPathName(size.width);
     const { from, to, amount } = getModelPathSegment(MODEL_PATH[pathName], progress);
     const pointerSmoothing = pointer.current.active
@@ -242,7 +201,7 @@ function CameraRig() {
 
   useFrame(() => {
     const activeCamera = cameraRef.current;
-    const progress = getScrollProgress();
+    const progress = getPageScrollProgress();
     const pathName = getModelPathName(size.width);
     const { from, to, amount } = getModelPathSegment(MODEL_PATH[pathName], progress);
 
@@ -276,7 +235,7 @@ function ModelPathDebugOverlay() {
       frame += 1;
 
       if (frame % 6 === 0) {
-        const progress = getScrollProgress();
+        const progress = getPageScrollProgress();
         const pathName = getModelPathName(window.innerWidth);
         const segment = getModelPathSegment(MODEL_PATH[pathName], progress);
 

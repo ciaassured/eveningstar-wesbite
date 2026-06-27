@@ -1,0 +1,150 @@
+.ambient,
+.experience {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+}
+
+.model-path-debug {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  z-index: 6;
+  display: grid;
+  width: min(320px, calc(100vw - 32px));
+  gap: 4px;
+  padding: 12px;
+  border: 1px solid var(--panel-border);
+  border-radius: 6px;
+  font-family: var(--font-mono);
+  font-size: 1rem;
+  line-height: 1;
+  color: var(--ink);
+  background: var(--panel-strong);
+  pointer-events: none;
+}
+
+.model-path-debug strong {
+  font-family: var(--font-display);
+  font-variation-settings:
+    "wght" 740,
+    "wdth" 104;
+  text-transform: uppercase;
+}
+
+.ambient {
+  z-index: 0;
+  background:
+    radial-gradient(circle at 28% 72%, var(--ambient-glow) 0, transparent 42%),
+    linear-gradient(
+      90deg,
+      var(--ambient-sheen-start, rgba(255, 255, 255, 0.42)),
+      var(--ambient-sheen-end, rgba(255, 255, 255, 0))
+    ),
+    linear-gradient(180deg, var(--paper-soft) 0%, var(--paper-deep) 48%, var(--paper) 100%);
+}
+
+.ambient__color {
+  position: absolute;
+  inset: -24%;
+  opacity: var(--ambient-primary-opacity);
+  filter: blur(34px) saturate(var(--ambient-saturation));
+  transform-origin: center;
+  will-change: transform;
+}
+
+.ambient__color--primary {
+  background: conic-gradient(
+    from 135deg at 46% 52%,
+    var(--field-a),
+    var(--field-b),
+    var(--field-c),
+    var(--field-d),
+    var(--field-a)
+  );
+  animation: field-drift 26s ease-in-out infinite alternate;
+}
+
+.ambient__color--secondary {
+  inset: -12%;
+  opacity: var(--ambient-secondary-opacity);
+  background:
+    linear-gradient(120deg, transparent 6%, var(--field-a-muted) 24%, transparent 43%),
+    linear-gradient(300deg, var(--field-c-muted) 3%, transparent 28%, var(--field-b-muted) 68%);
+  animation: field-counter 32s ease-in-out infinite alternate;
+}
+
+.ambient__cloud {
+  position: absolute;
+  inset: -15%;
+  opacity: var(--cloud-opacity);
+  filter: blur(16px);
+  mix-blend-mode: screen;
+  background:
+    linear-gradient(100deg, transparent 7%, var(--cloud) 16%, transparent 28%),
+    linear-gradient(79deg, transparent 16%, var(--cloud-muted) 28%, transparent 44%),
+    linear-gradient(132deg, transparent 52%, var(--cloud-muted) 64%, transparent 78%);
+  background-size: 180% 100%;
+  will-change: transform, background-position;
+}
+
+.ambient__cloud--near {
+  animation: cloud-sweep 54s linear infinite;
+}
+
+.ambient__cloud--far {
+  opacity: var(--cloud-far-opacity);
+  transform: rotate(180deg);
+  animation: cloud-sweep 82s linear infinite reverse;
+}
+
+.ambient__grid {
+  position: absolute;
+  inset: 0;
+  opacity: var(--grid-opacity);
+  background-image:
+    linear-gradient(to right, var(--line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--line) 1px, transparent 1px);
+  background-size: 12.5% 24%;
+  mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.78), rgba(0, 0, 0, 0.22));
+}
+
+.ambient__traces {
+  position: absolute;
+  inset: 0;
+  opacity: var(--trace-opacity);
+  background-image:
+    linear-gradient(90deg, transparent 0 11%, var(--trace) 11% 11.2%, transparent 11.2% 22%),
+    linear-gradient(0deg, transparent 0 18%, var(--trace) 18% 18.2%, transparent 18.2% 35%);
+  background-size: 440px 320px;
+  animation: trace-slide 46s linear infinite;
+}
+
+.experience {
+  z-index: 2;
+  pointer-events: none;
+}
+
+.experience canvas {
+  width: 100%;
+  height: 100%;
+  mix-blend-mode: normal;
+}
+
+.page-shell {
+  position: relative;
+}
+
+.hero-section__copy,
+.scroll-cue,
+.statement-section__copy,
+.comparison-section__header,
+.comparison-product--morningstar,
+.comparison-product__tag,
+.comparison-table-wrap,
+.inspection-section__copy,
+.inspection-control-panel,
+.site-footer {
+  position: relative;
+  z-index: 4;
+}

@@ -5,7 +5,7 @@ const basePath = process.env.GITHUB_ACTIONS === 'true' ? '/eveningstar-wesbite/'
 export default defineConfig({
   testDir: './tests',
   fullyParallel: true,
-  workers: process.env.CI ? 1 : undefined,
+  workers: 1,
   retries: 0,
   reporter: process.env.CI ? 'github' : 'list',
   use: {

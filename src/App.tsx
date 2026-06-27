@@ -8,7 +8,8 @@ import { ExperienceCanvas } from './components/ExperienceCanvas';
 import { KineticText } from './components/KineticText';
 import { LoadingScreen } from './components/LoadingScreen';
 import { assetPath } from './constants';
-import { MODEL_FLIP_CONTROL, MODEL_PATH_COMPACT_WIDTH } from './modelPath';
+import { MODEL_FLIP_CONTROL } from './modelPath';
+import { getModelPathName, getPageScrollProgress } from './modelPathRuntime';
 import { pickInitialEveningStarVariant } from './variants';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -23,16 +24,6 @@ const comparisonRows = [
 const initialVariant = pickInitialEveningStarVariant();
 
 type ThemeStyle = CSSProperties & Record<`--${string}`, string>;
-type ModelPathName = keyof typeof MODEL_FLIP_CONTROL.visibleFromProgress;
-
-function getPageScrollProgress() {
-  const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
-  return maxScroll <= 0 ? 0 : Math.min(Math.max(window.scrollY / maxScroll, 0), 1);
-}
-
-function getActiveModelPathName(): ModelPathName {
-  return window.innerWidth <= MODEL_PATH_COMPACT_WIDTH ? 'compact' : 'desktop';
-}
 
 function App() {
   const [variant] = useState(initialVariant);
@@ -71,7 +62,7 @@ function App() {
       rafId = 0;
 
       const progress = getPageScrollProgress();
-      const pathName = getActiveModelPathName();
+      const pathName = getModelPathName(window.innerWidth);
       const visible = progress >= MODEL_FLIP_CONTROL.visibleFromProgress[pathName];
 
       setFlipControlVisible(visible);

@@ -1,0 +1,102 @@
+:root {
+  color-scheme: light;
+  font-family: "VT323", "Courier New", monospace;
+  font-size: 16px;
+  line-height: 1.5;
+  font-weight: 400;
+  color: #101412;
+  background: #eaf7f4;
+  font-synthesis: none;
+  text-rendering: geometricPrecision;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  --paper: #edf7f4;
+  --paper-soft: #f7fcfb;
+  --paper-deep: #dff5f1;
+  --ink: #101412;
+  --ink-soft: rgba(16, 20, 18, 0.68);
+  --line: rgba(16, 20, 18, 0.08);
+  --panel: rgba(239, 250, 247, 0.66);
+  --panel-strong: rgba(237, 247, 244, 0.58);
+  --panel-border: rgba(16, 20, 18, 0.18);
+  --stroke: rgba(16, 20, 18, 0.88);
+  --accent: #00f0d1;
+  --accent-strong: #148aff;
+  --accent-on-dark: #00f0d1;
+  --secondary: #8038ff;
+  --cyan: var(--accent);
+  --blue: var(--accent-strong);
+  --violet: var(--secondary);
+  --rose: #ff547a;
+  --highlight: var(--accent);
+  --selection-bg: var(--accent);
+  --selection-ink: #f7fffd;
+  --gold: var(--accent-on-dark);
+  --trace: #0a6c5c;
+  --ambient-glow: rgba(0, 240, 209, 0.28);
+  --ambient-primary-opacity: 0.34;
+  --ambient-secondary-opacity: 0.22;
+  --ambient-saturation: 1.24;
+  --cloud-opacity: 0.34;
+  --cloud-far-opacity: 0.24;
+  --grid-opacity: 1;
+  --trace-opacity: 0.12;
+  --field-a: rgba(0, 240, 209, 0.88);
+  --field-b: rgba(20, 138, 255, 0.84);
+  --field-c: rgba(128, 56, 255, 0.78);
+  --field-d: rgba(255, 84, 122, 0.7);
+  --field-a-muted: rgba(0, 240, 209, 0.7);
+  --field-b-muted: rgba(20, 138, 255, 0.7);
+  --field-c-muted: rgba(255, 84, 122, 0.76);
+  --cloud: rgba(255, 255, 255, 0.76);
+  --cloud-muted: rgba(255, 255, 255, 0.5);
+  --loader-start: rgba(246, 252, 250, 0.94);
+  --loader-end: rgba(222, 246, 241, 0.92);
+  --font-display: "Tektur Variable", "Tektur", system-ui, sans-serif;
+  --font-mono: "VT323", "Courier New", monospace;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  min-width: 320px;
+  background: var(--paper);
+  scroll-behavior: smooth;
+}
+
+body {
+  min-width: 320px;
+  min-height: 100vh;
+  margin: 0;
+  overflow-x: hidden;
+  letter-spacing: 0;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+::selection {
+  color: var(--selection-ink);
+  background: var(--selection-bg);
+}
+
+::-moz-selection {
+  color: var(--selection-ink);
+  background: var(--selection-bg);
+}
+
+#root {
+  min-height: 100vh;
+}
+
+.theme-root {
+  min-height: 100vh;
+  color: var(--ink);
+  background: var(--paper);
+}
